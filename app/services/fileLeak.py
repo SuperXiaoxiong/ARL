@@ -110,6 +110,9 @@ class Page():
         self.status_code = req.status_code
         self._title = None
         self._location_url = None
+        self._is_back_up_path = None
+        self._is_back_up_page = None
+        self.back_up_suffix_list = [".tar", ".tar.gz", ".zip", ".rar", ".7z", ".bz2", ".gz", ".war"]
 
     def __eq__(self, other):
         if isinstance(other, Page):
@@ -196,6 +199,28 @@ class Page():
 
         return self._title
 
+    @property
+    def is_backup_path(self) -> bool:
+        if self._is_back_up_path is None:
+            for suffix in self.back_up_suffix_list:
+                if self.url.path.endswith(suffix):
+                    self._is_back_up_path = True
+                    return self._is_back_up_path
+
+            self._is_back_up_path = False
+
+        return self._is_back_up_path
+
+    @property
+    def is_backup_page(self) -> bool:
+        if self._is_back_up_page is None:
+            content_type = self.raw_req.conn.headers.get("Content-Type", "")
+            if "application" in content_type.lower():
+                self._is_back_up_page = True
+            else:
+                self._is_back_up_page = False
+
+        return self._is_back_up_page
 
     def __str__(self):
         msg = "[{}][{}][{}]{}".format(self.status_code, self.title, len(self.content), self.url)
@@ -294,6 +319,10 @@ class FileLeak(BaseThread):
     def is_404_page(self, page: Page):
         if page.status_code not in self.page200_code_list:
             return True
+
+        if page.is_backup_path:
+            if not page.is_backup_page:
+                return True
 
         for title in self.page404_title:
             if title in page.title:
