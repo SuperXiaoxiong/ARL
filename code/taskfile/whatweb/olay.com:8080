@@ -1,0 +1,30 @@
+WhatWeb report for http://olay.com:8080
+Status    : 404 Not Found
+Title     : Error 404 (Not Found)!!1
+IP        : 35.241.33.125
+Country   : UNITED STATES, US
+
+Summary   : UncommonHeaders[referrer-policy], HTML5
+
+Detected Plugins:
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : referrer-policy (from headers)
+
+HTTP Headers:
+	HTTP/1.1 404 Not Found
+	Content-Type: text/html; charset=UTF-8
+	Referrer-Policy: no-referrer
+	Content-Length: 1561
+	Date: Sat, 05 Dec 2020 10:02:12 GMT
+	Connection: close
+	

@@ -1,0 +1,94 @@
+WhatWeb report for https://account.for-me-online.de/
+Status    : 200 OK
+Title     : <None>
+IP        : 18.184.125.169
+Country   : UNITED STATES, US
+
+Summary   : X-UA-Compatible[IE=edge], JQuery, nginx, UncommonHeaders[x-content-type-options,content-security-policy], Script, X-Frame-Options[SAMEORIGIN], X-XSS-Protection[1; mode=block], HTTPServer[nginx], HTML5, Strict-Transport-Security[max-age=31536000; includeSubdomains; preload]
+
+Detected Plugins:
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : nginx (from server string)
+
+[ JQuery ]
+	A fast, concise, JavaScript that simplifies how to traverse 
+	HTML documents, handle events, perform animations, and add 
+	AJAX. 
+
+	Website     : http://jquery.com/
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+
+[ Strict-Transport-Security ]
+	Strict-Transport-Security is an HTTP header that restricts 
+	a web browser from accessing a website without the security 
+	of the HTTPS protocol. 
+
+	String       : max-age=31536000; includeSubdomains; preload
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options,content-security-policy (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-UA-Compatible ]
+	This plugin retrieves the X-UA-Compatible value from the 
+	HTTP header and meta http-equiv tag. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc817574.aspx 
+
+	String       : IE=edge
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+[ nginx ]
+	Nginx (Engine-X) is a free, open-source, high-performance 
+	HTTP server and reverse proxy, as well as an IMAP/POP3 
+	proxy server. 
+
+	Website     : http://nginx.net/
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Date: Sat, 12 Dec 2020 14:00:26 GMT
+	Content-Type: text/html
+	Transfer-Encoding: chunked
+	Connection: close
+	Server: nginx
+	Last-Modified: Tue, 08 Dec 2020 07:43:17 GMT
+	Vary: Accept-Encoding
+	ETag: W/"5fcf2e95-cdd"
+	X-Frame-Options: SAMEORIGIN
+	X-Content-Type-Options: nosniff
+	X-XSS-Protection: 1; mode=block
+	Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://s.pinimg.com https://ariel-lenor-testwochen.de https://always-testwochen.de https://jolt-assets.s3.eu-central-1.amazonaws.com https://connect.facebook.net https://stackpath.bootstrapcdn.com https://geolocation.onetrust.com https://code.jquery.com https://cdn.segment.com https://api.segment.io https://c.lytics.io https://cdn.cookielaw.org https://template.justsnap.eu https://aa.agkn.com https://www.google-analytics.com https://js.agkn.com https://www.googletagmanager.com https://optout.betrad.com https://c.betrad.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://www.google.com https://www.google.de https://tagmanager.google.com https://www.gstatic.com https://ssl.google-analytics.com https://pg.segmanta.com/ https://pgsurveys.segmanta.com/ https://pge.segmanta.com/; img-src https://ct.pinterest.com https://c.lytics.io/ 'self' blob: data: blob: https://cdn.livechatinc.com https://www.facebook.com https://res.cloudinary.com https://jolt-assets.s3.eu-central-1.amazonaws.com https://template.justsnap.eu https://stats.g.doubleclick.net https://www.google-analytics.com https://ssl.google-analytics.com https://s-static.ak.facebook.com https://c.betrad.com https://l.betrad.com https://www.googletagmanager.com https://www.google.de https://www.google.com https://tagmanager.google.com https://www.google.com.tr https://cdn.cookielaw.org; style-src 'self' data: 'unsafe-inline' https://tagmanager.google.com https://c.lytics.io https://jolt-assets.s3.eu-central-1.amazonaws.com https://stackpath.bootstrapcdn.com https://cdn.cookielaw.org https://fonts.googleapis.com; font-src 'self' data: https://www.ariel.de https://fonts.gstatic.com https://themes.googleusercontent.com; frame-src https://api.lytics.io/ https://www.facebook.com/ https://pgsurveys.segmanta.com/ https://accounts.livechatinc.com https://d.agkn.com https://www.googletagmanager.com https://www.google.com https://www.google.de https://www.gstatic.com https://tagmanager.google.com; object-src 'none'; connect-src 'self' data: wss://api.livechatinc.com https://api.segment.io https://ct.pinterest.com https://api.livechatinc.com https://jolt-assets.s3.eu-central-1.amazonaws.com https://cdn.cookielaw.org https://template.justsnap.eu https://receipt.justsnap.de https://aa.agkn.com https://www.google-analytics.com https://js.agkn.com https://www.googletagmanager.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://www.google.com https://www.google.de https://tagmanager.google.com https://pg.segmanta.com/ https://pge.segmanta.com/ https://pgsurveys.segmanta.com/
+	Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+	Content-Encoding: gzip
+	

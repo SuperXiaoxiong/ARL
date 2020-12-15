@@ -1,0 +1,50 @@
+WhatWeb report for http://mx00.for-me-online.de/
+Status    : 200 OK
+Title     : Wilkommen auf mx00.for-me-online.de
+IP        : 80.254.132.225
+Country   : GERMANY, DE
+
+Summary   : Email[hra@all-connect.net,service@all-connect.net], Apache, HTTPServer[Apache]
+
+Detected Plugins:
+[ Apache ]
+	The Apache HTTP Server Project is an effort to develop and 
+	maintain an open-source HTTP server for modern operating 
+	systems including UNIX and Windows NT. The goal of this 
+	project is to provide a secure, efficient and extensible 
+	server that provides HTTP services in sync with the current 
+	HTTP standards. 
+
+	Google Dorks: (3)
+	Website     : http://httpd.apache.org/
+
+[ Email ]
+	Extract email addresses. Find valid email address and 
+	syntactically invalid email addresses from mailto: link 
+	tags. We match syntactically invalid links containing 
+	mailto: to catch anti-spam email addresses, eg. bob at 
+	gmail.com. This uses the simplified email regular 
+	expression from 
+	http://www.regular-expressions.info/email.html for valid 
+	email address matching. 
+
+	String       : hra@all-connect.net,service@all-connect.net
+
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : Apache (from server string)
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Date: Sat, 12 Dec 2020 14:00:14 GMT
+	Server: Apache
+	Cache-Control: max-age=604800, private, must-revalidate
+	Expires: Sat, 19 Dec 2020 14:00:14 GMT
+	Vary: Accept-Encoding
+	Content-Encoding: gzip
+	Content-Length: 4387
+	Connection: close
+	Content-Type: text/html
+	

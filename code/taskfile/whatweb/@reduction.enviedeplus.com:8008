@@ -1,0 +1,100 @@
+WhatWeb report for http://@reduction.enviedeplus.com:8008
+Status    : 302 Found
+Title     : <None>
+IP        : 195.200.165.162
+Country   : FRANCE, FR
+
+Summary   : UncommonHeaders[x-content-type-options,content-security-policy], X-Frame-Options[SAMEORIGIN], X-XSS-Protection[1; mode=block], RedirectLocation[https://reduction.enviedeplus.com:8010/]
+
+Detected Plugins:
+[ RedirectLocation ]
+	HTTP Server string location. used with http-status 301 and 
+	302 
+
+	String       : https://reduction.enviedeplus.com:8010/ (from location)
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options,content-security-policy (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+HTTP Headers:
+	HTTP/1.1 302 Found
+	Location: https://reduction.enviedeplus.com:8010/
+	Connection: close
+	X-Frame-Options: SAMEORIGIN
+	X-XSS-Protection: 1; mode=block
+	X-Content-Type-Options: nosniff
+	Content-Security-Policy: frame-ancestors
+	
+WhatWeb report for https://reduction.enviedeplus.com:8010/
+Status    : 200 OK
+Title     : Web Filter Block Override
+IP        : 195.200.165.162
+Country   : FRANCE, FR
+
+Summary   : UncommonHeaders[x-content-type-options,content-security-policy], X-Frame-Options[SAMEORIGIN], X-XSS-Protection[1; mode=block], PoweredBy[Fortinet]
+
+Detected Plugins:
+[ PoweredBy ]
+	This plugin identifies instances of 'Powered by x' text and 
+	attempts to extract the value for x. 
+
+	String       : Fortinet
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-content-type-options,content-security-policy (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ X-XSS-Protection ]
+	This plugin retrieves the X-XSS-Protection value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : 1; mode=block
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Content-Length: 2535
+	Connection: close
+	Cache-Control: no-cache
+	Content-Type: text/html; charset=utf-8
+	X-Frame-Options: SAMEORIGIN
+	X-XSS-Protection: 1; mode=block
+	X-Content-Type-Options: nosniff
+	Content-Security-Policy: frame-ancestors
+	

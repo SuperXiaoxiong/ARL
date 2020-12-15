@@ -1,0 +1,16 @@
+admin.haircode.com
+imap.haircode.com
+ns.haircode.com
+appgw.haircode.com
+arg.mail.haircode.com
+vpn.haircode.com
+sftp.haircode.com
+api.haircode.com
+mailno.haircode.com
+app.haircode.com
+kerberos.haircode.com
+mail.haircode.com
+latam.haircode.com
+sql.haircode.com
+ftp.haircode.com
+www.haircode.com

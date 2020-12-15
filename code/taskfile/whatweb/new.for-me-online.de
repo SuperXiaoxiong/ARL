@@ -1,0 +1,33 @@
+WhatWeb report for https://new.for-me-online.de/
+Status    : 301 Moved Permanently
+Title     : 301 Moved Permanently
+IP        : 13.107.246.13
+Country   : UNITED STATES, US
+
+Summary   : UncommonHeaders[x-azure-ref], RedirectLocation[https://www.for-me-online.de/]
+
+Detected Plugins:
+[ RedirectLocation ]
+	HTTP Server string location. used with http-status 301 and 
+	302 
+
+	String       : https://www.for-me-online.de/ (from location)
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-azure-ref (from headers)
+
+HTTP Headers:
+	HTTP/1.1 301 Moved Permanently
+	Content-Length: 195
+	Content-Type: text/html
+	Location: https://www.for-me-online.de/
+	X-Azure-Ref: 0fM3UXwAAAACUyy91qBJpQKQOMX50oe/FSEtHMzBFREdFMDYxMQA5MmM3YmQ5NS03ZGYwLTQ3ZTgtOWMxMy1iMGJhZjFjOTdkZDk=
+	Date: Sat, 12 Dec 2020 14:02:36 GMT
+	Connection: close
+	

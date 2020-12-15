@@ -1,0 +1,125 @@
+WhatWeb report for https://for-me-online.de/
+Status    : 301 Moved Permanently
+Title     : 301 Moved Permanently
+IP        : 13.107.246.13
+Country   : UNITED STATES, US
+
+Summary   : UncommonHeaders[x-azure-ref], RedirectLocation[https://www.for-me-online.de/]
+
+Detected Plugins:
+[ RedirectLocation ]
+	HTTP Server string location. used with http-status 301 and 
+	302 
+
+	String       : https://www.for-me-online.de/ (from location)
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : x-azure-ref (from headers)
+
+HTTP Headers:
+	HTTP/1.1 301 Moved Permanently
+	Content-Length: 195
+	Content-Type: text/html
+	Location: https://www.for-me-online.de/
+	X-Azure-Ref: 0Gs3UXwAAAAC1Ad8TMniqSanIkSc0i3o7SEtHMzBFREdFMDYwOAA5MmM3YmQ5NS03ZGYwLTQ3ZTgtOWMxMy1iMGJhZjFjOTdkZDk=
+	Date: Sat, 12 Dec 2020 14:00:58 GMT
+	Connection: close
+	
+WhatWeb report for https://www.for-me-online.de/
+Status    : 200 OK
+Title     : <None>
+IP        : 13.107.246.13
+Country   : UNITED STATES, US
+
+Summary   : nginx, UncommonHeaders[request-context,x-azure-ref-originshield,x-azure-ref], Open-Graph-Protocol[website], Script[application/json], X-Frame-Options[SAMEORIGIN], HTTPServer[nginx], HTML5, Cookies[formeonline#lang], Strict-Transport-Security[max-age=31536000]
+
+Detected Plugins:
+[ Cookies ]
+	Display the names of cookies in the HTTP headers. The 
+	values are not returned to save on space. 
+
+	String       : formeonline#lang
+
+[ HTML5 ]
+	HTML version 5, detected by the doctype declaration 
+
+
+[ HTTPServer ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	String       : nginx (from server string)
+
+[ Open-Graph-Protocol ]
+	The Open Graph protocol enables you to integrate your Web 
+	pages into the social graph. It is currently designed for 
+	Web pages representing profiles of real-world things . 
+	things like movies, sports teams, celebrities, and 
+	restaurants. Including Open Graph tags on your Web page, 
+	makes your page equivalent to a Facebook Page. 
+
+	Version      : website
+
+[ Script ]
+	This plugin detects instances of script HTML elements and 
+	returns the script language/type. 
+
+	String       : application/json
+
+[ Strict-Transport-Security ]
+	Strict-Transport-Security is an HTTP header that restricts 
+	a web browser from accessing a website without the security 
+	of the HTTPS protocol. 
+
+	String       : max-age=31536000
+
+[ UncommonHeaders ]
+	Uncommon HTTP server headers. The blacklist includes all 
+	the standard headers and many non standard but common ones. 
+	Interesting but fairly common headers should have their own 
+	plugins, eg. x-powered-by, server and x-aspnet-version. 
+	Info about headers can be found at www.http-stats.com 
+
+	String       : request-context,x-azure-ref-originshield,x-azure-ref (from headers)
+
+[ X-Frame-Options ]
+	This plugin retrieves the X-Frame-Options value from the 
+	HTTP header. - More Info: 
+	http://msdn.microsoft.com/en-us/library/cc288472%28VS.85%29.
+	aspx
+
+	String       : SAMEORIGIN
+
+[ nginx ]
+	Nginx (Engine-X) is a free, open-source, high-performance 
+	HTTP server and reverse proxy, as well as an IMAP/POP3 
+	proxy server. 
+
+	Website     : http://nginx.net/
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Cache-Control: no-cache, no-store
+	Pragma: no-cache
+	Content-Length: 253973
+	Content-Type: text/html; charset=utf-8
+	Expires: -1
+	ETag: W/"63ea3e14-6799-43ef-90f6-397625a576fb-110191"
+	Vary: Accept-Encoding
+	Server: nginx
+	Set-Cookie: formeonline#lang=de-DE; path=/; secure
+	X-Cache: TCP_MISS
+	request-context: appId=cid-v1:885099bf-b2a6-436c-a31e-2a27acf8b20f
+	x-frame-options: SAMEORIGIN
+	strict-transport-security: max-age=31536000
+	X-Azure-Ref-OriginShield: 0X83UXwAAAABCd1ZIXQ4aTYU7Vsc7VF3vSEsyRURHRTA0MTIAOTJjN2JkOTUtN2RmMC00N2U4LTljMTMtYjBiYWYxYzk3ZGQ5
+	X-Azure-Ref: 0X83UXwAAAADQf/WiHn2JTavBSVSNv7TLSEtHMzBFREdFMDYyMQA5MmM3YmQ5NS03ZGYwLTQ3ZTgtOWMxMy1iMGJhZjFjOTdkZDk=
+	Date: Sat, 12 Dec 2020 14:02:09 GMT
+	Connection: close
+	

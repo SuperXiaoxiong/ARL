@@ -1,0 +1,16 @@
+ftp.arg.mail.haircode.com
+mail.arg.mail.haircode.com
+admin.arg.mail.haircode.com
+www.arg.mail.haircode.com
+imap.arg.mail.haircode.com
+sftp.arg.mail.haircode.com
+latam.arg.mail.haircode.com
+arg.mail.arg.mail.haircode.com
+mailno.arg.mail.haircode.com
+app.arg.mail.haircode.com
+vpn.arg.mail.haircode.com
+appgw.arg.mail.haircode.com
+ns.arg.mail.haircode.com
+api.arg.mail.haircode.com
+sql.arg.mail.haircode.com
+kerberos.arg.mail.haircode.com

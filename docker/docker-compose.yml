@@ -1,45 +1,45 @@
 version: '3'
 
 services:
-    web:
-        image: tophant/arl:latest
-        container_name: arl_web
-        restart: unless-stopped
-        depends_on:
-          - mongodb
-        ports:
-          - "5003:80"
-        volumes:
-          - ./arl_web.log:/code/arl_web.log
-          - ./config-docker.yaml:/code/app/config.yaml
-          - ./image:/code/app/tmp_screenshot
-        entrypoint: ["sh", "-c", "nginx; gunicorn -b 0.0.0.0:5003 app.main:arl_app -w 3 --access-logfile arl_web.log"]
-        environment:
-          - LANG=en_US.UTF-8
-          - TZ=Asia/Shanghai
-
-    worker:
-        image: tophant/arl:latest
-        container_name: arl_worker
-        restart: unless-stopped
-        depends_on:
-          - mongodb
-          - rabbitmq
-        volumes:
-          - ./arl_worker.log:/code/arl_worker.log
-          - ./config-docker.yaml:/code/app/config.yaml
-          - ./image:/code/app/tmp_screenshot
-        entrypoint: ["sh", "-c", "celery -A app.celerytask.celery worker -l info -Q arltask -n arltask -c 2 -O fair -f arl_worker.log"]
-        environment:
-          - LANG=en_US.UTF-8
-          - TZ=Asia/Shanghai
+#    web:
+#        image: tophant/arl:latest
+#        container_name: arl_web
+#        restart: unless-stopped
+#        depends_on:
+#          - mongodb
+#        ports:
+#          - "5003:80"
+#        volumes:
+#          - ./arl_web.log:/code/arl_web.log
+#          - ./config-docker.yaml:/code/app/config.yaml
+#          - ./image:/code/app/tmp_screenshot
+#        entrypoint: ["sh", "-c", "nginx; gunicorn -b 0.0.0.0:5003 app.main:arl_app -w 3 --access-logfile arl_web.log"]
+#        environment:
+#          - LANG=en_US.UTF-8
+#          - TZ=Asia/Shanghai
+#
+#    worker:
+#        image: tophant/arl:latest
+#        container_name: arl_worker
+#        restart: unless-stopped
+#        depends_on:
+#          - mongodb
+#          - rabbitmq
+#        volumes:
+#          - ./arl_worker.log:/code/arl_worker.log
+#          - ./config-docker.yaml:/code/app/config.yaml
+#          - ./image:/code/app/tmp_screenshot
+#        entrypoint: ["sh", "-c", "celery -A app.celerytask.celery worker -l info -Q arltask -n arltask -c 2 -O fair -f arl_worker.log"]
+#        environment:
+#          - LANG=en_US.UTF-8
+#          - TZ=Asia/Shanghai
 
     mongodb:
         image: mongo:3.6-stretch
         container_name: arl_mongodb
         restart: always
-        volumes:
-            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+        ports:
+          - "27017:27017"
         environment:
           - MONGO_INITDB_DATABASE=arl
           - MONGO_INITDB_ROOT_USERNAME=admin
@@ -54,6 +54,15 @@ services:
         - RABBITMQ_DEFAULT_PASS=arlpassword
         - RABBITMQ_DEFAULT_USER=arl
         - RABBITMQ_DEFAULT_VHOST=arlv2host
+      ports:
+        - "4369:4369"
+        - "5671:5671"
+        - "5672:5672"
+        - "25672:25672"
+        - "15671:15671"
+        - "15672:15672"
+        - "15691:15691"
+        - "15692:15692"
       logging:
         driver: "json-file"
         options:
