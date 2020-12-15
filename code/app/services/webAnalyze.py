@@ -12,7 +12,7 @@ class WebAnalyze(BaseThread):
         self.analyze_map = {}
 
     def work(self, site):
-        cmd_parameters = ['phantomjs',
+        cmd_parameters = ['/home/ubuntu/work/phantomjs_file/phantomjs',
                           '--ignore-ssl-errors true',
                           '--ssl-protocol any',
                           '--ssl-ciphers ALL',

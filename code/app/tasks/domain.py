@@ -459,6 +459,7 @@ class DomainTask():
         self.ipv4_map = {}
         self.site_info_list = []
         self.web_analyze_map = {}
+        self.what_web_map = {}
         self.cert_map = {}
         self.service_info_list = []
         #用来区分是正常任务还是监控任务
@@ -584,6 +585,19 @@ class DomainTask():
 
         return domain_info_list
 
+    def sub_takeover(self):
+        sub_takeover_t1 = time.time()
+        logger.info("main thread start sub_takeover {}".format(self.base_domain))
+        # riskiq_all_domains = services.sub_takeover([self.base_domain])
+        domain_list = []
+        for item in self.domain_info_list:
+            domain_list.append(item.domain)
+        services.sub_takeover(list(set(domain_list)))
+
+        elapse = time.time() - sub_takeover_t1
+        logger.info("end sub_takeover_t1 fetch {} elapse {}".format(
+            self.base_domain, elapse))
+
     def alt_dns(self):
         if self.task_tag == "monitor" and len(self.domain_info_list) >= 800:
             logger.info("skip alt_dns on monitor {}".format(self.base_domain))
@@ -637,17 +651,19 @@ class DomainTask():
             finger_list = self.web_analyze_map.get(curr_site, [])
             site_info["finger"] = finger_list
 
-            if self.options.get("site_identify"):
-                web_app_finger = services.web_app_identify(site_info)
-                flag = False
-                if web_app_finger and finger_list:
-                    for finger in finger_list:
-                        if finger["name"].lower() == web_app_finger["name"].lower():
-                            flag = True
-                            break
-
-                if not flag and web_app_finger:
-                    finger_list.append(web_app_finger)
+            what_web_list = self.what_web_map.get(curr_site, [])
+            site_info["whatweb"] = what_web_list
+            # if self.options.get("site_identify"):
+            #     web_app_finger = services.web_app_identify(site_info)
+            #     flag = False
+            #     if web_app_finger and finger_list:
+            #         for finger in finger_list:
+            #             if finger["name"].lower() == web_app_finger["name"].lower():
+            #                 flag = True
+            #                 break
+            #
+            #     if not flag and web_app_finger:
+            #         finger_list.append(web_app_finger)
 
             
             utils.conn_db('site').insert_one(site_info)
@@ -918,6 +934,16 @@ class DomainTask():
             elapse = time.time() - t1
             self.update_services("alt_dns", elapse)
 
+        '''
+        子域名接管
+        '''
+        if self.options.get('sub_takeover'):
+            self.update_task_field("status", "sub_takeover")
+            t1 = time.time()
+            self.sub_takeover()
+            elapse = time.time() - t1
+            self.update_services("sub_takeover", elapse)
+
     def start_ip_fetch(self):
         self.gen_ipv4_map()
 
@@ -1060,4 +1086,14 @@ def add_domain_to_scope(domain, scope_id):
     services.sync_asset(task_id=task_id, scope_id=scope_id)
 
 
+if __name__ == "__main__":
 
+    # task_options = {'domain_brute': False, 'domain_brute_type': 'big', 'port_scan_type': 'top100', 'port_scan': False, 'service_detection': False, 'service_brute': False, 'os_detection': False, 'site_identify': True, 'site_capture': False, 'file_leak': False, 'search_engines': False, 'site_spider': False, 'arl_search': False, 'riskiq_search': False, 'alt_dns': False, 'github_search_domain': False, 'url_spider': None, 'ssl_cert': False, 'fetch_api_path': False, 'fofa_search': False, 'sub_takeover': False, 'test_add_new': False, 'wahtweb': False}
+    task_options = {'domain_brute': False, 'domain_brute_type': 'big', 'port_scan_type': 'top100', 'port_scan': False,
+                    'service_detection': False, 'service_brute': False, 'os_detection': False, 'site_identify': False,
+                    'site_capture': False, 'file_leak': False, 'search_engines': False, 'site_spider': False,
+                    'arl_search': False, 'riskiq_search': False, 'alt_dns': False, 'github_search_domain': False,
+                    'url_spider': False, 'ssl_cert': False, 'fetch_api_path': False, 'fofa_search': False,
+                    'sub_takeover': True, 'test_add_new': False, 'whatweb': False}
+
+    domain_task('dentalcare.com', '5fcc73f65f627d0b125e6f3f', task_options)

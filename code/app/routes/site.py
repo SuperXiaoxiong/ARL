@@ -13,7 +13,9 @@ base_search_fields = {
     'title': fields.String(description="标题"),
     'http_server': fields.String(description="Web servers"),
     'headers': fields.String(description="headers"),
-    'finger.name': fields.String(description="指纹"),
+    # 'finger.name': fields.String(description="指纹"),
+    'finger': fields.Raw(description="指纹"),
+	'whatweb': fields.String(description="whatweb"),
     'status': fields.Integer(description="状态码"),
     'favicon.hash': fields.Integer(description="favicon hash"),
     'task_id': fields.String(description="任务 ID"),
@@ -26,7 +28,7 @@ base_search_fields.update(base_query_fields)
 class ARLSite(ARLResource):
     parser = get_arl_parser(base_search_fields, location='args')
 
-    @auth
+
     @ns.expect(parser)
     def get(self):
         """

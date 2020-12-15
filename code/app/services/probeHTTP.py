@@ -28,7 +28,8 @@ class ProbeHTTP(BaseThread):
         return _targets
 
     def work(self, target):
-        utils.http_req(target, 'head', timeout=(3, 2))
+        '''30s timeout / https/http dropduplicate'''
+        utils.http_req(target, 'head', timeout=(30, 20))
         self.sites.append(target)
 
     def run(self):

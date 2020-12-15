@@ -18,7 +18,7 @@ class SiteScreenshot(BaseThread):
     def work(self, site):
         file_name = '{}/{}.jpg'.format(self.capture_dir, self.gen_filename(site))
 
-        cmd_parameters = ['phantomjs',
+        cmd_parameters = ['/home/ubuntu/work/phantomjs_file/phantomjs',
                           '--ignore-ssl-errors true',
                           '--ssl-protocol any',
                           '--ssl-ciphers ALL',

@@ -248,8 +248,8 @@ class FileLeak(BaseThread):
         self.path_404 = "not_found_2222_111"
         self.page404_set = set()
         self.page200_set = set()
-        self.page200_code_list = [200, 301, 302, 500]
-        self.page404_title = ["404", "不存在", "错误", "403", "禁止访问", "请求含有不合法的参数"]
+        self.page200_code_list = [200, 301, 302, 500, 403]
+        self.page404_title = ["404", "不存在", "错误",  "禁止访问", "请求含有不合法的参数"]
         self.page404_title.extend(["网络防火墙", "访问拦截", "由于安全原因JSP功能默认关闭"])
         self.page404_content = [b'<script>document.getElementById("a-link").click();</script>']
         self.location404 = ["/auth/login/", "error.html"]

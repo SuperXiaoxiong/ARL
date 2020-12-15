@@ -9,7 +9,7 @@ class PortScan:
         self.targets = " ".join(targets)
         self.ports = ports
         self.alive_port = "22,80,443,3389,8007-8011,8443,9090,8080-8091,8093,8099,5000-5004,2222,3306,1433,21,25"
-        self.nmap_arguments = "-sS -n --open --defeat-rst-ratelimit"
+        self.nmap_arguments = "-sS -n --open --defeat-rst-ratelimit --script-args http.useragent=\"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:83.0) Gecko/20100101 Firefox/83.0\" "
         self.max_retries = 3
         self.host_timeout = 60*5
         if service_detect:

@@ -136,3 +136,5 @@
 [Not Vulnerable] china.dentalcare.com
 [Not Vulnerable] proshop.dentalcare.com
 [Not Vulnerable] proshop.dentalcare.com
+[Not Vulnerable] dentalcare.com
+[Not Vulnerable] dentalcare.com
