@@ -17,5 +17,4 @@ from .fetchCert import fetch_cert
 from .fileLeak import file_leak
 from .pageFetch import page_fetch
 from .webAppIdentify import web_app_identify
-from .subTakeOver import sub_takeover
-from .whatWeb import what_web
+from .syncAsset import sync_asset

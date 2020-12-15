@@ -10,8 +10,6 @@ from app import  modules
 from app.modules import ScanPortType, DomainDictType, CollectSource, TaskStatus
 from app.services import fetchCert
 from bson.objectid import  ObjectId
-import json
-
 '''
 域名爆破
 '''
@@ -35,21 +33,29 @@ class DomainBrute():
         domains = []
         domain_cname_record = []
         for x in self.brute_out:
-            if utils.check_domain_black(x["domain"]):
+            current_domain = x["domain"].lower()
+            if not utils.domain_parsed(current_domain):
                 continue
 
-            domains.append(x["domain"])
+            if utils.check_domain_black(current_domain):
+                continue
 
-            self.brute_domain_map[x["domain"]] = x["record"]
+            if current_domain not in domains:
+                domains.append(current_domain)
+
+            self.brute_domain_map[current_domain] = x["record"]
 
             if x["type"] == 'CNAME':
-                item = x["domain"].lower()
-                if utils.check_domain_black(item):
+                self.domain_cnames.append(current_domain)
+                current_record_domain = x['record']
+
+                if not utils.domain_parsed(current_record_domain):
                     continue
 
-                if utils.domain_parsed(item):
-                    self.domain_cnames.append(item)
-                    domain_cname_record.append(x["record"])
+                if utils.check_domain_black(current_record_domain):
+                    continue
+                if current_record_domain not in domain_cname_record:
+                    domain_cname_record.append(current_record_domain)
 
         for domain in domain_cname_record:
             if not domain.endswith(self.base_domain_scope):
@@ -58,7 +64,7 @@ class DomainBrute():
                 domains.append(domain)
 
         start_time = time.time()
-        logger.info("start reslover {}".format(self.base_domain, len(domains)))
+        logger.info("start reslover {} {}".format(self.base_domain, len(domains)))
         self.resolver_map = services.resolver_domain(domains)
         elapse = time.time() - start_time
         logger.info("end reslover {} result {}, elapse {}".format(self.base_domain,
@@ -80,7 +86,7 @@ class DomainBrute():
 
         for domain in self.resolver_map:
             ips = self.resolver_map[domain]
-            if self.resolver_map[domain]:
+            if ips:
                 if domain in self.domain_cnames:
                     item = {
                         "domain": domain,
@@ -132,9 +138,11 @@ class ScanPort():
 
         start_time = time.time()
         logger.info("start port_scan {}".format(len(all_ipv4_list)))
-        ip_port_result = services.port_scan(all_ipv4_list, **self.option)
-        elapse = time.time() - start_time
-        logger.info("end port_scan result {}, elapse {}".format(len(ip_port_result), elapse))
+        ip_port_result = []
+        if all_ipv4_list:
+            ip_port_result = services.port_scan(all_ipv4_list, **self.option)
+            elapse = time.time() - start_time
+            logger.info("end port_scan result {}, elapse {}".format(len(ip_port_result), elapse))
 
         ip_info_obj = []
         for result in ip_port_result:
@@ -267,7 +275,7 @@ class AltDNS():
         out = services.altdns(self.domains, self.base_domain, self.dicts)
 
         elapse = time.time() - t1
-        logger.info("end check_http result {}, elapse {}".format(len(out), elapse))
+        logger.info("end AltDNS result {}, elapse {}".format(len(out), elapse))
 
         return out
 
@@ -428,8 +436,10 @@ ssl_cert
 fetch_api_path
 fofa_search
 sub_takeover
-whatweb
 '''
+
+
+MAX_MAP_COUNT = 35
 
 class DomainTask():
     def __init__(self, base_domain = None, task_id = None, options = None):
@@ -449,9 +459,10 @@ class DomainTask():
         self.ipv4_map = {}
         self.site_info_list = []
         self.web_analyze_map = {}
-        self.what_web_map = {}
         self.cert_map = {}
         self.service_info_list = []
+        #用来区分是正常任务还是监控任务
+        self.task_tag = "task"
 
         scan_port_map = {
             "test": ScanPortType.TEST,
@@ -487,15 +498,12 @@ class DomainTask():
 
         domain_info_list = domain_brute(self.base_domain, word_file=domain_word_file)
         domain_info_list = self.clear_domain_info_by_record(domain_info_list)
-
-        self.save_domain_info_list(domain_info_list, source=CollectSource.DOMAIN_BRUTE)
+        if self.task_tag == "task":
+            self.save_domain_info_list(domain_info_list, source=CollectSource.DOMAIN_BRUTE)
         self.domain_info_list.extend(domain_info_list)
 
 
     def clear_domain_info_by_record(self, domain_info_list):
-        '''
-        不知道这段在干什么？
-        '''
         new_list = []
         for info in domain_info_list:
             if not info.record_list:
@@ -505,7 +513,7 @@ class DomainTask():
             cnt = self.record_map.get(record, 0)
             cnt += 1
             self.record_map[record] = cnt
-            if cnt >= 25:
+            if cnt > MAX_MAP_COUNT:
                 continue
 
             new_list.append(info)
@@ -517,34 +525,24 @@ class DomainTask():
         logger.info("start riskiq fetch {}".format(self.base_domain))
         riskiq_all_domains = services.riskiq_search(self.base_domain)
         domain_info_list = self.build_domain_info(riskiq_all_domains)
-        domain_info_list = self.clear_domain_info_by_record(domain_info_list)
-        self.save_domain_info_list(domain_info_list, source=CollectSource.RISKIQ)
+        if self.task_tag == "task":
+            domain_info_list = self.clear_domain_info_by_record(domain_info_list)
+            self.save_domain_info_list(domain_info_list, source=CollectSource.RISKIQ)
 
         self.domain_info_list.extend(domain_info_list)
         elapse = time.time() - riskiq_t1
         logger.info("end riskiq fetch {} {} elapse {}".format(
             self.base_domain, len(domain_info_list), elapse))
 
-    def sub_takeover(self):
-        sub_takeover_t1 = time.time()
-        logger.info("main thread start sub_takeover {}".format(self.base_domain))
-        # riskiq_all_domains = services.sub_takeover([self.base_domain])
-        domain_list = []
-        for item in self.domain_info_list:
-            domain_list.append(item.domain)
-        services.sub_takeover(list(set(domain_list)))
-
-        elapse = time.time() - sub_takeover_t1
-        logger.info("end sub_takeover_t1 fetch {} elapse {}".format(
-            self.base_domain, elapse))
 
     def arl_search(self):
         arl_t1 = time.time()
         logger.info("start arl fetch {}".format(self.base_domain))
         arl_all_domains = utils.arl_domain(self.base_domain)
         domain_info_list = self.build_domain_info(arl_all_domains)
-        domain_info_list = self.clear_domain_info_by_record(domain_info_list)
-        self.save_domain_info_list(domain_info_list, source=CollectSource.ARL)
+        if self.task_tag == "task":
+            domain_info_list = self.clear_domain_info_by_record(domain_info_list)
+            self.save_domain_info_list(domain_info_list, source=CollectSource.ARL)
 
         self.domain_info_list.extend(domain_info_list)
         elapse = time.time() - arl_t1
@@ -552,6 +550,9 @@ class DomainTask():
             self.base_domain, len(domain_info_list), elapse))
 
     def build_domain_info(self, domains):
+        """
+        构建domain_info_list 带去重功能
+        """
         fake_list = []
         domains_set = set()
         for item in domains:
@@ -564,15 +565,9 @@ class DomainTask():
                 continue
             domains_set.add(domain)
 
-            '''
-            检查子域名和顶级域名是不是在黑名单内，如果在，丢弃
-            '''
             if utils.check_domain_black(domain):
                 continue
 
-            '''
-            默认构造 CNAME type, 通过 build_domain_info 进行填充
-            '''
             fake = {
                 "domain": domain,
                 "type": "CNAME",
@@ -583,22 +578,25 @@ class DomainTask():
             if fake_info not in self.domain_info_list:
                 fake_list.append(fake_info)
 
+        if self.task_tag == "monitor":
+            return fake_list
         domain_info_list = services.build_domain_info(fake_list)
 
-        return  domain_info_list
-
+        return domain_info_list
 
     def alt_dns(self):
+        if self.task_tag == "monitor" and len(self.domain_info_list) >= 800:
+            logger.info("skip alt_dns on monitor {}".format(self.base_domain))
+            return
+
         alt_dns_out = alt_dns(self.domain_info_list, self.base_domain)
         alt_domain_info_list = self.build_domain_info(alt_dns_out)
-        alt_domain_info_list = self.clear_domain_info_by_record(alt_domain_info_list)
-
-        self.save_domain_info_list(alt_domain_info_list,
-                              source=CollectSource.ALTDNS)
+        if self.task_tag == "task":
+            alt_domain_info_list = self.clear_domain_info_by_record(alt_domain_info_list)
+            self.save_domain_info_list(alt_domain_info_list,
+                                source=CollectSource.ALTDNS)
 
         self.domain_info_list.extend(alt_domain_info_list)
-
-
 
     def port_scan(self):
         ip_info_list = scan_port(self.domain_info_list, self.scan_port_option)
@@ -611,21 +609,17 @@ class DomainTask():
 
         self.ip_info_list.extend(ip_info_list)
 
-
-
     def find_site(self):
         if self.options.get("port_scan"):
             '''***站点寻找***'''
             sites = find_site(self.ip_info_list)
         else:
             sites = services.probe_http(self.domain_info_list)
-            '''30s timeout / https/http dropduplicate'''
+
             ip_site = services.probe_http(self.fofa_ip_set)
             sites.extend(ip_site)
 
         self.site_list.extend(sites)
-
-
 
     def fetch_site(self):
         '''***站点信息获取***'''
@@ -641,23 +635,19 @@ class DomainTask():
             site_info["screenshot"] = file_name
 
             finger_list = self.web_analyze_map.get(curr_site, [])
-            what_web_list = self.what_web_map.get(curr_site, [])
             site_info["finger"] = finger_list
-            site_info["whatweb"] = what_web_list
 
             if self.options.get("site_identify"):
-                # web_app_finger = services.web_app_identify(site_info)
-                # flag = False
-                # if web_app_finger and finger_list:
-                #     for finger in finger_list:
-                #         # if finger["name"].lower() == web_app_finger["name"].lower():
-                #         #     flag = True
-                #         #     break
-                #         pass
-                #
-                # if not flag and web_app_finger:
-                #     finger_list.append(web_app_finger)
-                pass
+                web_app_finger = services.web_app_identify(site_info)
+                flag = False
+                if web_app_finger and finger_list:
+                    for finger in finger_list:
+                        if finger["name"].lower() == web_app_finger["name"].lower():
+                            flag = True
+                            break
+
+                if not flag and web_app_finger:
+                    finger_list.append(web_app_finger)
 
             
             utils.conn_db('site').insert_one(site_info)
@@ -833,11 +823,10 @@ class DomainTask():
             logger.exception(e)
             logger.warning("fofa search error {}, {}".format(self.base_domain, e))
 
-    def whatweb(self):
-        self.what_web_map = services.what_web(self.site_list)
 
     def site_identify(self):
         self.web_analyze_map = services.web_analyze(self.site_list)
+
 
     def ssl_cert(self):
         if self.options.get("port_scan"):
@@ -858,7 +847,6 @@ class DomainTask():
             }
             utils.conn_db('cert').insert_one(item)
 
-
     def file_leak(self):
         for site in self.site_list:
             pages = services.file_leak([site], utils.load_file(Config.FILE_LEAK_TOP_2k))
@@ -877,7 +865,6 @@ class DomainTask():
             _type = 'CNAME'
         ips = utils.get_ip(domain)
         if _type == "A":
-            # cname exists not use a
             record = ips
         else:
             record = cname
@@ -894,20 +881,7 @@ class DomainTask():
 
         return modules.DomainInfo( **item )
 
-    def run(self):
-        '''
-
-        '''
-        self.update_task_field("start_time", utils.curr_date())
-
-        '''****testAddnew***'''
-        if self.options.get("testAddnew"):
-            self.update_task_field("status", "testAddnew")
-            t1 = time.time()
-            self.domain_brute()
-            elapse = time.time() - t1
-            self.update_services("testAddnew", elapse)
-
+    def domain_fetch(self):
         '''****域名爆破开始****'''
         if self.options.get("domain_brute"):
             self.update_task_field("status", "domain_brute")
@@ -916,25 +890,18 @@ class DomainTask():
             elapse = time.time() - t1
             self.update_services("domain_brute", elapse)
         else:
-            domain_info =  self.build_single_domain_info(self.base_domain)
+            domain_info = self.build_single_domain_info(self.base_domain)
             if domain_info:
                 self.domain_info_list.append(domain_info)
                 self.save_domain_info_list([domain_info])
 
-
         '''***RiskIQ查询****'''
-        '''只用RiskIQ做了子域名查詢
-        TODO：
-        1. 添加证书查询， easy
-        2. 相关中间件查询， high
-        '''
-        if services.riskiq_quota() > 0 and self.options.get("riskiq_search"):
+        if self.options.get("riskiq_search") and services.riskiq_quota() > 0:
             self.update_task_field("status", "riskiq_search")
             t1 = time.time()
             self.riskiq_search()
             elapse = time.time() - t1
             self.update_services("riskiq_search", elapse)
-
 
         if self.options.get("arl_search"):
             self.update_task_field("status", "arl_search")
@@ -942,7 +909,6 @@ class DomainTask():
             self.arl_search()
             elapse = time.time() - t1
             self.update_services("arl_search", elapse)
-
 
         '''***智能域名生成****'''
         if self.options.get("alt_dns"):
@@ -952,17 +918,7 @@ class DomainTask():
             elapse = time.time() - t1
             self.update_services("alt_dns", elapse)
 
-        '''
-        子域名接管
-        '''
-        if self.options.get('sub_takeover'):
-            self.update_task_field("status", "sub_takeover")
-            t1 = time.time()
-            self.sub_takeover()
-            elapse = time.time() - t1
-            self.update_services("sub_takeover", elapse)
-
-        '''***reset ip indexes***'''
+    def start_ip_fetch(self):
         self.gen_ipv4_map()
 
         '''***佛法证书域名关联****'''
@@ -992,26 +948,14 @@ class DomainTask():
         # 服务信息存储
         if self.options.get("service_detection"):
             self.save_service_info()
-
-        # get and store ip base info (offline)
         self.save_ip_info()
 
-
+    def start_site_fetch(self):
         self.update_task_field("status", "find_site")
         t1 = time.time()
         self.find_site()
         elapse = time.time() - t1
         self.update_services("find_site", elapse)
-
-        '''
-        whatweb site cms analysis
-        '''
-        if self.options.get('whatweb'):
-            self.update_task_field("status", "whatweb")
-            t1 = time.time()
-            self.whatweb()
-            elapse = time.time() - t1
-            self.update_services("whatweb", elapse)
 
         '''***站点识别***'''
         if self.options.get("site_identify"):
@@ -1027,7 +971,6 @@ class DomainTask():
         elapse = time.time() - t1
         self.update_services("fetch_site", elapse)
 
-
         '''***站点截图***'''
         if self.options.get("site_capture"):
             self.update_task_field("status", "site_capture")
@@ -1035,7 +978,6 @@ class DomainTask():
             self.site_screenshot()
             elapse = time.time() - t1
             self.update_services("site_capture", elapse)
-
 
         '''搜索引擎查询'''
         if self.options.get("search_engines"):
@@ -1061,8 +1003,19 @@ class DomainTask():
             elapse = time.time() - t1
             self.update_services("file_leak", elapse)
 
+    def run(self):
+
+        self.update_task_field("start_time", utils.curr_date())
+
+        self.domain_fetch()
+
+        self.start_ip_fetch()
+
+        self.start_site_fetch()
+
         self.update_task_field("status", TaskStatus.DONE)
         self.update_task_field("end_time", utils.curr_date())
+
 
 def domain_task(base_domain, task_id, options):
     d = DomainTask(base_domain = base_domain, task_id = task_id, options = options)
@@ -1073,21 +1026,38 @@ def domain_task(base_domain, task_id, options):
         d.update_task_field("status", TaskStatus.ERROR)
         d.update_task_field("end_time", utils.curr_date())
 
-if __name__ == "__main__":
 
-    # task_options = {'domain_brute': False, 'domain_brute_type': 'big', 'port_scan_type': 'top100', 'port_scan': False, 'service_detection': False, 'service_brute': False, 'os_detection': False, 'site_identify': True, 'site_capture': False, 'file_leak': False, 'search_engines': False, 'site_spider': False, 'arl_search': False, 'riskiq_search': False, 'alt_dns': False, 'github_search_domain': False, 'url_spider': None, 'ssl_cert': False, 'fetch_api_path': False, 'fofa_search': False, 'sub_takeover': False, 'test_add_new': False, 'wahtweb': False}
-    task_options = {'domain_brute': False, 'domain_brute_type': 'big', 'port_scan_type': 'top100', 'port_scan': False,
-                    'service_detection': False, 'service_brute': False, 'os_detection': False, 'site_identify': False,
-                    'site_capture': False, 'file_leak': False, 'search_engines': False, 'site_spider': False,
-                    'arl_search': False, 'riskiq_search': False, 'alt_dns': False, 'github_search_domain': False,
-                    'url_spider': False, 'ssl_cert': False, 'fetch_api_path': False, 'fofa_search': False,
-                    'sub_takeover': True, 'test_add_new': False, 'whatweb': False}
+def add_domain_to_scope(domain, scope_id):
+    task_data = {
+        'name': '添加域名',
+        'target': domain,
+        'start_time': '-',
+        'status': 'waiting',
+        'type': 'domain',
+        'options': {
+            'domain_brute': True,
+            'domain_brute_type': 'test',
+            'port_scan_type': 'test',
+            'port_scan': True,
+            'service_detection': False,
+            'service_brute': False,
+            'os_detection': False,
+            'site_identify': True,
+            'site_capture': False,
+            'file_leak': False,
+            'alt_dns': False,
+            'site_spider': False,
+            'search_engines': False,
+            'ssl_cert': False,
+            'fofa_search': False
+        }
+    }
 
-    domain_task('dentalcare.com', '5fcc73f65f627d0b125e6f3f', task_options)
+    utils.conn_db('task').insert_one(task_data)
+    task_id = str(task_data.pop("_id"))
 
-
-
-
+    domain_task(domain, task_id, task_data["options"])
+    services.sync_asset(task_id=task_id, scope_id=scope_id)
 
 
 

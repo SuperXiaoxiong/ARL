@@ -18,7 +18,7 @@ SET_PROXY = False
 
 def http_req(url, method = 'get', **kwargs):
     kwargs.setdefault('verify', False)
-    kwargs.setdefault('timeout', (30.1, 30.1))
+    kwargs.setdefault('timeout', (10.1, 30.1))
     kwargs.setdefault('allow_redirects', False)
 
     headers = kwargs.get("headers", {})
@@ -41,11 +41,8 @@ class ConnMongo(object):
     def __new__(self):
         if not hasattr(self, 'instance'):
             self.instance = super(ConnMongo, self).__new__(self)
+            self.instance.conn = MongoClient(Config.MONGO_URL)
         return self.instance
-
-
-    def __init__(self):
-        self.conn = MongoClient(Config.MONGO_URL)
 
 
 def conn_db(collection, db_name = None):

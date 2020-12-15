@@ -1,0 +1,3 @@
+gunicorn -b 0.0.0.0:5003 app.main:arl_app -w 3 --access-logfile arl_web.log
+
+celery -A app.celerytask.celery worker -l info -Q arltask -n arltask -c 2 -O fair -f arl_worker.log

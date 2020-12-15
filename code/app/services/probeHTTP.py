@@ -28,18 +28,15 @@ class ProbeHTTP(BaseThread):
         return _targets
 
     def work(self, target):
-        utils.http_req(target, 'head', timeout=(30, 20))
-        logger.info("ProbeHTTP append {}".format(target))
+        utils.http_req(target, 'head', timeout=(3, 2))
         self.sites.append(target)
 
     def run(self):
         t1 = time.time()
         logger.info("start ProbeHTTP {}".format(len(self.targets)))
-        logger.info("start ProbeHTTP target {}".format(str(self.targets)))
         self._run()
         # 去除https和http相同的
         alive_site = []
-        logger.info("start ProbeHTTP sites {}".format(str(self.sites)))
         for x in self.sites:
             if x.startswith("https://"):
                 alive_site.append(x)
@@ -51,7 +48,6 @@ class ProbeHTTP(BaseThread):
 
         elapse = time.time() - t1
         logger.info("end ProbeHTTP {} elapse {}".format(len(alive_site), elapse))
-        logger.info("end ProbeHTTP avlie_site {}".format(str(alive_site)))
 
         return alive_site
 

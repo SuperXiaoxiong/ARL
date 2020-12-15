@@ -28,10 +28,6 @@ class RiskIQPassive():
             if utils.domain_parsed(domain):
                 subdomains.append(domain)
 
-        # with open('/home/ubuntu/work/ARL/code/taskfile/subdomain_lists/{}'.format(target), 'w') as f_:
-        #     for line in list(set(subdomains)):
-        #         f_.writelines(line)
-        #         f_.write('\n')
         return list(set(subdomains))
 
 
@@ -53,7 +49,7 @@ def riskiq_search(domain):
         count, limit = r.quota()
         logger.info("riskiq api quota [{}/{}] [{}]".format(count, limit, domain))
         if count < limit:
-            return  r.search_subdomain(domain)
+            return r.search_subdomain(domain)
     except Exception as e:
         if "'user'" == str(e):
             logger.warning("riskiq api auth error ({}, {})".format(Config.RISKIQ_EMAIL,
@@ -67,10 +63,12 @@ def riskiq_search(domain):
 def riskiq_quota():
     try:
         r = RiskIQPassive(Config.RISKIQ_EMAIL, Config.RISKIQ_KEY)
-        count, limit =   r.quota()
-        return limit - count
+        count, limit = r.quota()
+        quota = limit - count
+        if quota == 0:
+            logger.info("riskiq api quota is zero {}".format(Config.RISKIQ_EMAIL))
+        return quota
     except Exception as e:
         logger.exception(e)
 
     return 0
-
